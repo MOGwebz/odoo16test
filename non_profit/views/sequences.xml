@@ -1,0 +1,12 @@
+<odoo>
+  <data noupdate="1">
+
+    <record id="seq_non_profit_id" model="ir.sequence">
+            <field name="name">Fund Request ID</field>
+            <field name="code">non.profit</field>
+            <field name="prefix">FREQ/%(y)s/%(month)s-</field>
+            <field name="padding">4</field>
+    </record>
+
+  </data>
+</odoo>
