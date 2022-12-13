@@ -1,0 +1,32 @@
+<odoo>
+  <data>
+
+
+    <record model="ir.ui.view" id="non_profit_res_partner_form">
+      <field name="name">Non Profit Res.partner Form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='company_type']" position="after">
+            <label for="donor" string="Donor" invisible="1"/>
+            <field name="donor" invisible="1"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="action_non_profit_view" model="ir.actions.act_window">
+      <!-- <field name="sequence" eval="100"/> -->
+      <field name="name">Donors</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+      <!-- <field name="view_id" ref="sacco_member_list"/> -->
+      <!-- <field name="act_window_id" ref="non_profit_res_partner_form"/> -->
+      <field name="domain">[('donor','=',True)]</field>
+      <field name="context">{"default_donor":True}</field>
+    </record>
+
+    <menuitem name="Donors" id="donors_menu_root" sequence="2" parent="non_profit.menu_1" action="action_non_profit_view"/>
+
+    
+  </data>
+</odoo>

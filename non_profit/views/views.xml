@@ -1,0 +1,88 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="non_profit.list">
+      <field name="name">non_profit list</field>
+      <field name="model">non.profit</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="description"/>
+          <!-- <field name="value2"/> -->
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_non_profit_form" model="ir.ui.view">
+        <field name="name">Non Profit Form</field>
+        <field name="model">non.profit</field>
+        <field name="arch" type="xml">
+            <form string=" Non Profit">
+                <header>
+                  <button confirm="Are you sure record info is correct?" string="Validate Record" type="object" attrs="{'invisible': [('status', '!=', 'draft')]}" 
+                  name="request_confirm" class="btn btn-primary"/>
+                  <button string="Receive Funds" type="object" attrs="{'invisible': [('status', '!=', 'confirm')]}"
+                  name="process_payment" confirm="Are you sure funds have been received?" class="btn btn-primary"/>
+                  <button string="Cancel Request" type="object" attrs="{'invisible': [('status', '!=', 'confirm')]}" 
+                  name="request_cancel" class="btn btn-primary"/>
+                  <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+                      <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                          <field name="donor" required="1" />
+                          <field name="amount" attrs="{'readonly': [('status', '!=', 'draft')]}" widget="monetary" 
+                                  options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                          <field name="currency_id" invisible="0" />
+                          <field name="donor_income_account" invisible="0" />
+                        </group>
+                        <group>
+                          <field name="journal_id" invisible="0" />
+                          <field name="journal_entry_id" invisible="0" />
+                          <field name="description" invisible="0" />
+                        </group>
+                        
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                  <field name="message_follower_ids" widget="mail_followers"/>
+                  <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="non_profit.action_window">
+      <field name="name">Fund Requests</field>
+      <field name="res_model">non.profit</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Donors" sequence="1" id="non_profit.menu_1" parent="account_accountant.menu_accounting"/>
+
+    <menuitem name="Fund Requests" id="non_profit.menu_1_list" parent="non_profit.menu_1"
+              action="non_profit.action_window" sequence="1"/>
+
+    <!-- Payments Override -->
+    <record id="view_account_payment_form_extended" model="ir.ui.view">
+        <field name="name">non_profit_payment_extended</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='is_internal_transfer']" position="after">  
+              <field name="fund_request" force-save="1"  invisible="0"/>
+              <field name="destination_account_id" force-save="1"  invisible="0"/>
+            </xpath>      
+        </field>
+    </record>
+
+  </data>
+</odoo>
